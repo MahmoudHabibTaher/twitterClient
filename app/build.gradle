@@ -1,9 +1,27 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        // The Fabric Gradle plugin uses an open ended version to react
+        // quickly to Android tooling updates
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 plugins {
     id "me.tatarka.retrolambda" version "3.3.1"
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 25
@@ -53,6 +71,9 @@ dependencies {
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.jakewharton:butterknife:8.4.0'
+    compile('com.twitter.sdk.android:twitter:2.2.0@aar') {
+        transitive = true;
+    }
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'

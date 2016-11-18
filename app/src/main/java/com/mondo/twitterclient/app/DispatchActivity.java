@@ -1,7 +1,9 @@
-package com.mondo.twitterclient;
+package com.mondo.twitterclient.app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.mondo.twitterclient.R;
 
 public class DispatchActivity extends AppCompatActivity {
 

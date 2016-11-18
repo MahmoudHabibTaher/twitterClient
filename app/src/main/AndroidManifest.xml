@@ -2,13 +2,22 @@
 <manifest package="com.mondo.twitterclient"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
+        android:name=".app.TwitterClientApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DispatchActivity">
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="452ab694bd0a4770290ceb3a8b26cf40ea69e2b8"
+            />
+
+        <activity android:name=".app.DispatchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
