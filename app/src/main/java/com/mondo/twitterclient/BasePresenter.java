@@ -6,5 +6,5 @@ package com.mondo.twitterclient;
 
 public interface BasePresenter {
     void subscribe();
-    void unSubsribe();
+    void unSubscribe();
 }
