@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,6 +35,9 @@ public class FollowersListFragment extends Fragment implements FollowersListCont
         return new FollowersListFragment();
     }
 
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     @BindView(R.id.followers_recycler_view)
     RecyclerView mRecyclerView;
 
@@ -59,6 +64,9 @@ public class FollowersListFragment extends Fragment implements FollowersListCont
     }
 
     private void init() {
+        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color
+                .colorAccent));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadFollowers(true));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         mFollowersAdapter = new FollowersAdapter(R.layout.layout_follower_list_item,
@@ -91,6 +99,7 @@ public class FollowersListFragment extends Fragment implements FollowersListCont
     @Override
     public void showFollowers(@NonNull List<Follower> followers) {
         mFollowersAdapter.setNewData(followers);
+        mSwipeRefreshLayout.setRefreshing(false);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
