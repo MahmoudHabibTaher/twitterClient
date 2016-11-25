@@ -1,15 +1,22 @@
 package com.mondo.twitterclient.user.followers.data;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by mahmoud on 11/23/16.
  */
 
 public class Follower {
+    @SerializedName("id")
     private long id;
     private long userId;
+    @SerializedName("name")
     private String name;
+    @SerializedName("screen_name")
     private String screenName;
+    @SerializedName("description")
     private String description;
+    @SerializedName("profile_image_url")
     private String imageUrl;
     private long cursor;
 

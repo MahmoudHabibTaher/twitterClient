@@ -33,6 +33,7 @@ public class TwitterLoginPresenter implements TwitterLoginContract.Presenter {
         mView.setPresenter(this);
 
         mTwitterLoginHelper = new TwitterLoginHelper();
+        mTwitterLoginHelper.setLoginCallback(mCallback);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class TwitterLoginPresenter implements TwitterLoginContract.Presenter {
 
     @Override
     public void unSubscribe() {
-        mTwitterLoginHelper.setLoginCallback(null);
+//        mTwitterLoginHelper.setLoginCallback(null);
     }
 
     @Override

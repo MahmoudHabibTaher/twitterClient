@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.mondo.twitterclient.R;
+import com.mondo.twitterclient.user.followers.list.FollowersListActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +60,8 @@ public class TwitterLoginFragment extends Fragment implements TwitterLoginContra
 
     @Override
     public void showUserFollowersUi() {
-        Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
+        startActivity(FollowersListActivity.getStartIntent(getContext()));
+        getActivity().finish();
     }
 
     @Override

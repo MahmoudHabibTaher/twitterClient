@@ -18,4 +18,6 @@ public interface FollowersDataSource {
     Observable<Follower> getFollower(long userId, long id);
 
     void saveFollower(@NonNull Follower follower);
+
+    void refreshFollowers();
 }

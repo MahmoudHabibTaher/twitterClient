@@ -92,4 +92,9 @@ public class FollowersLocalDataSource implements FollowersDataSource {
             realm.close();
         });
     }
+
+    @Override
+    public void refreshFollowers() {
+
+    }
 }

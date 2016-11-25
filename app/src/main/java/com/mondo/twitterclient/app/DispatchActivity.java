@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.mondo.twitterclient.R;
 import com.mondo.twitterclient.user.authentication.TwitterLoginActivity;
+import com.mondo.twitterclient.user.followers.list.FollowersListActivity;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 
@@ -24,7 +25,7 @@ public class DispatchActivity extends AppCompatActivity {
     }
 
     private void startUserFollowersActivity() {
-
+        startActivity(FollowersListActivity.getStartIntent(this));
     }
 
     private void startTwitterLoginActivity() {

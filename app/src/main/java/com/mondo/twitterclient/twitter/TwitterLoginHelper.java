@@ -19,6 +19,8 @@ public class TwitterLoginHelper {
     private Callback<TwitterSession> mCallback = new Callback<TwitterSession>() {
         @Override
         public void success(Result<TwitterSession> result) {
+            TwitterSession session = result.data;
+            TwitterApiHelper.addCustomApiClients(session);
             if (mLoginCallback != null) {
                 mLoginCallback.onLoginSuccess(result.data);
             }

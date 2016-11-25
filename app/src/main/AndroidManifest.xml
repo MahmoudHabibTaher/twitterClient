@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".user.authentication.TwitterLoginActivity"/>
+        <activity android:name=".user.followers.list.FollowersListActivity"/>
     </application>
 
 </manifest>
