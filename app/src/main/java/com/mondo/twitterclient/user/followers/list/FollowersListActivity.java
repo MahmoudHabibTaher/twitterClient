@@ -28,6 +28,8 @@ public class FollowersListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_followers_list);
 
+        setToolbarTitle(getString(R.string.followers_list_activity_title));
+
         FollowersListFragment followersListFragment = (FollowersListFragment)
                 getSupportFragmentManager()
                         .findFragmentById(R.id.followers_list_fragment);

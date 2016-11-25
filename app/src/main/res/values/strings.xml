@@ -5,4 +5,5 @@
     <string name="screen_name_string_holder">\@%s</string>
     <string name="no_followers_text_view_text">No followers found</string>
     <string name="error_loading_followers_text_view_text">Error loading followers</string>
+    <string name="followers_list_activity_title">Followers</string>
 </resources>
