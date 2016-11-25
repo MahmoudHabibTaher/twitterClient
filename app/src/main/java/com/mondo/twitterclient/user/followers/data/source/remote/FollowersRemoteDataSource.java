@@ -10,7 +10,6 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
 
 import java.util.List;
 
@@ -24,19 +23,20 @@ import rx.Observable;
 public class FollowersRemoteDataSource implements FollowersDataSource {
     private static FollowersRemoteDataSource INSTANCE;
 
-    public static FollowersRemoteDataSource getInstance(TwitterSession session) {
+    public static FollowersRemoteDataSource getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new FollowersRemoteDataSource(session);
+            INSTANCE = new FollowersRemoteDataSource();
         }
         return INSTANCE;
     }
 
     private FollowersService mFollowersService;
 
-    private FollowersRemoteDataSource(TwitterSession session) {
+    private long mNextCursor;
+
+    private FollowersRemoteDataSource() {
         CustomTwitterApiClient apiClient = (CustomTwitterApiClient) TwitterCore.getInstance()
-                .getApiClient(
-                        session);
+                .getApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
         mFollowersService = apiClient.getFollowersService();
     }
 
@@ -51,6 +51,7 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
                 public void success(Result<FollowersResult> result) {
                     FollowersResult data = result.data;
                     if (data != null) {
+                        mNextCursor = data.getNextCursor();
                         if (!subscriber.isUnsubscribed()) {
                             subscriber.onNext(data.getFollowers());
                             subscriber.onCompleted();
@@ -72,6 +73,11 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
                 }
             });
         });
+    }
+
+    @Override
+    public Observable<List<Follower>> getNextFollowers(long userId) {
+        return getFollowers(userId, mNextCursor);
     }
 
     @Override
@@ -113,14 +119,6 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
 
     @Override
     public void refreshFollowers() {
-
-    }
-
-    private Observable<List<Follower>> onGetFollowersResult(FollowersResult result) {
-        if (result != null) {
-            return Observable.just(result.getFollowers());
-        } else {
-            return Observable.error(new NoResultException());
-        }
+        // Not Implemented
     }
 }

@@ -63,6 +63,8 @@ public class FollowersListFragment extends Fragment implements FollowersListCont
                 .VERTICAL, false));
         mFollowersAdapter = new FollowersAdapter(R.layout.layout_follower_list_item,
                 new ArrayList<>());
+        mFollowersAdapter.setEnableLoadMore(true);
+        mFollowersAdapter.setOnLoadMoreListener(() -> mPresenter.loadMore());
         mRecyclerView.setAdapter(mFollowersAdapter);
 
         mErrorLoadingFollowersTextView.setOnClickListener(view -> onRetryClick());
@@ -88,13 +90,28 @@ public class FollowersListFragment extends Fragment implements FollowersListCont
 
     @Override
     public void showFollowers(@NonNull List<Follower> followers) {
-        mFollowersAdapter.addData(followers);
+        mFollowersAdapter.setNewData(followers);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showMoreFollowers(@NonNull List<Follower> followers) {
-        Log.d(TAG, "Show More Followers");
+        mFollowersAdapter.addData(followers);
+        mFollowersAdapter.loadMoreComplete();
+    }
+
+    @Override
+    public void setLoadingMoreFollowersErrorVisible(boolean visible) {
+        if (visible) {
+            mFollowersAdapter.loadMoreFail();
+        }
+    }
+
+    @Override
+    public void setNoMoreFollowersVisible(boolean visible) {
+        if (visible) {
+            mFollowersAdapter.loadMoreEnd();
+        }
     }
 
     @Override

@@ -57,6 +57,11 @@ public class FollowersLocalDataSource implements FollowersDataSource {
     }
 
     @Override
+    public Observable<List<Follower>> getNextFollowers(long userId) {
+        return null;
+    }
+
+    @Override
     public Observable<Follower> getFollower(long userId, long id) {
         return Observable.create(subscriber -> {
             Follower follower = null;

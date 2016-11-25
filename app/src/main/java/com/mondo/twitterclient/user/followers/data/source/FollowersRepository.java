@@ -59,6 +59,17 @@ public class FollowersRepository implements FollowersDataSource {
     }
 
     @Override
+    public Observable<List<Follower>> getNextFollowers(long userId) {
+        return getRemoteNextFollowers(userId);
+    }
+
+    private Observable<List<Follower>> getRemoteNextFollowers(long userId) {
+        return mRemoteDataSource.getNextFollowers(userId).flatMap(
+                followers -> Observable.from(followers).doOnNext(
+                        this::saveFollower).toList()).doOnCompleted(() -> mCacheDirty = false);
+    }
+
+    @Override
     public Observable<Follower> getFollower(long userId, long id) {
         Observable<Follower> remoteFollower = getRemoteFollower(userId, id);
 

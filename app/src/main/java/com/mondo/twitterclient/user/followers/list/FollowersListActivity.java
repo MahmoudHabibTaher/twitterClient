@@ -11,7 +11,6 @@ import com.mondo.twitterclient.ui.activities.BaseActivity;
 import com.mondo.twitterclient.user.followers.data.source.FollowersRepository;
 import com.mondo.twitterclient.user.followers.data.source.local.FollowersLocalDataSource;
 import com.mondo.twitterclient.user.followers.data.source.remote.FollowersRemoteDataSource;
-import com.twitter.sdk.android.Twitter;
 
 /**
  * Created by mahmoud on 11/24/16.
@@ -39,8 +38,7 @@ public class FollowersListActivity extends BaseActivity {
         }
 
         mPresenter = new FollowersListPresenter(FollowersRepository.getInstance(
-                FollowersRemoteDataSource.getInstance(
-                        Twitter.getSessionManager().getActiveSession()),
+                FollowersRemoteDataSource.getInstance(),
                 FollowersLocalDataSource.getInstance(RealmHelper.getFollowersRealmConfiguration()
                 )), followersListFragment);
     }

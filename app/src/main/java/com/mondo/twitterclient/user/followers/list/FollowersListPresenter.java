@@ -74,6 +74,28 @@ public class FollowersListPresenter implements FollowersListContract.Presenter {
 
     @Override
     public void loadMore() {
+        mSubscription.clear();
+
+        Subscription subscription = mRepository.getNextFollowers(mUserId).subscribeOn(Schedulers
+                .io()).observeOn(AndroidSchedulers.mainThread()).subscribe
+                (this::onMoreFollowersLoaded,
+                        this::onMoreFollowersLoadError, this::onMoreFollowersLoadComplete);
+        mSubscription.add(subscription);
+    }
+
+    private void onMoreFollowersLoaded(List<Follower> followers) {
+        if (!followers.isEmpty()) {
+            mView.showMoreFollowers(followers);
+        } else {
+            mView.setNoMoreFollowersVisible(true);
+        }
+    }
+
+    private void onMoreFollowersLoadError(Throwable throwable) {
+        mView.setLoadingMoreFollowersErrorVisible(true);
+    }
+
+    private void onMoreFollowersLoadComplete() {
 
     }
 

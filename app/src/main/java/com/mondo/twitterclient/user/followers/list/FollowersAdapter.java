@@ -14,7 +14,7 @@ import java.util.List;
  * Created by mahmoud on 11/24/16.
  */
 
-public class FollowersAdapter extends BaseQuickAdapter<Follower> {
+public class FollowersAdapter extends BaseQuickAdapter<Follower, BaseViewHolder> {
     public FollowersAdapter(int layoutResId,
                             List<Follower> data) {
         super(layoutResId, data);

@@ -15,6 +15,8 @@ import rx.Observable;
 public interface FollowersDataSource {
     Observable<List<Follower>> getFollowers(long userId, long cursor);
 
+    Observable<List<Follower>> getNextFollowers(long userId);
+
     Observable<Follower> getFollower(long userId, long id);
 
     void saveFollower(@NonNull Follower follower);

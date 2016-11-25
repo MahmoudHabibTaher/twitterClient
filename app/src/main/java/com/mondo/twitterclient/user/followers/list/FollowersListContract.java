@@ -18,11 +18,15 @@ public interface FollowersListContract {
 
         void showFollowers(@NonNull List<Follower> followers);
 
-        void showMoreFollowers(@NonNull List<Follower> followers);
-
         void setNoFollowersVisible(boolean visible);
 
         void setErrorLoadingFollowersVisible(boolean visible);
+
+        void showMoreFollowers(@NonNull List<Follower> followers);
+
+        void setLoadingMoreFollowersErrorVisible(boolean visible);
+
+        void setNoMoreFollowersVisible(boolean visible);
 
         void openFollowerDetailsUi(long id);
     }
