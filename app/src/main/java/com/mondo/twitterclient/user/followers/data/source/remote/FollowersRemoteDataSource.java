@@ -10,7 +10,10 @@ import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.services.StatusesService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,6 +34,7 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
     }
 
     private FollowersService mFollowersService;
+    private StatusesService mStatusesService;
 
     private long mNextCursor;
 
@@ -38,10 +42,11 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
         CustomTwitterApiClient apiClient = (CustomTwitterApiClient) TwitterCore.getInstance()
                 .getApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
         mFollowersService = apiClient.getFollowersService();
+        mStatusesService = apiClient.getStatusesService();
     }
 
     @Override
-    public Observable<List<Follower>> getFollowers(long userId, long cursor) {
+    public Observable<List<Follower>> getFollowers(Long userId, Long cursor) {
         return Observable.create(subscriber -> {
             Call<FollowersResult> call = mFollowersService.getFollowers(userId, null, cursor,
                     null, true,
@@ -75,13 +80,14 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
         });
     }
 
+
     @Override
-    public Observable<List<Follower>> getNextFollowers(long userId) {
+    public Observable<List<Follower>> getNextFollowers(Long userId) {
         return getFollowers(userId, mNextCursor);
     }
 
     @Override
-    public Observable<Follower> getFollower(long userId, long id) {
+    public Observable<Follower> getFollower(Long userId, Long id) {
         return Observable.create(subscriber -> {
             Call<Follower> call = mFollowersService.getFollower(id, null, false);
             call.enqueue(new Callback<Follower>() {
@@ -101,6 +107,7 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
                     }
                 }
 
+
                 @Override
                 public void failure(TwitterException exception) {
                     if (!subscriber.isUnsubscribed()) {
@@ -110,6 +117,55 @@ public class FollowersRemoteDataSource implements FollowersDataSource {
                 }
             });
         });
+    }
+
+    @Override
+    public Observable<List<com.mondo.twitterclient.user.followers.data.Tweet>> getTweets
+            (Long userId, Integer
+                    count) {
+        return Observable.create(subscriber -> {
+            Call<List<Tweet>> call = mStatusesService.userTimeline(userId, null, count, null, null,
+                    null, null, null,
+                    null);
+            call.enqueue(new Callback<List<Tweet>>() {
+                @Override
+                public void success(Result<List<Tweet>> result) {
+                    List<Tweet> tweets = result.data;
+                    if (tweets != null) {
+                        List<com.mondo.twitterclient.user.followers.data.Tweet> tweetList = new
+                                ArrayList<>();
+                        for (Tweet tweet : tweets) {
+                            tweetList.add(new com.mondo.twitterclient.user.followers.data.Tweet
+                                    (tweet.id, tweet.text, tweet.retweetCount, tweet.createdAt,
+                                            tweet
+                                                    .lang, tweet.user.id));
+                        }
+                        if (!subscriber.isUnsubscribed()) {
+                            subscriber.onNext(tweetList);
+                            subscriber.onCompleted();
+                        }
+                    } else {
+                        if (!subscriber.isUnsubscribed()) {
+                            subscriber.onError(new NoResultException());
+                            subscriber.onCompleted();
+                        }
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onError(exception);
+                        subscriber.onCompleted();
+                    }
+                }
+            });
+        });
+    }
+
+    @Override
+    public void saveTweet(@NonNull com.mondo.twitterclient.user.followers.data.Tweet tweet) {
+
     }
 
     @Override

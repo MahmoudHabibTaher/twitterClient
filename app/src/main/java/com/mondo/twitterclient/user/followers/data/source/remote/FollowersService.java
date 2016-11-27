@@ -1,6 +1,9 @@
 package com.mondo.twitterclient.user.followers.data.source.remote;
 
 import com.mondo.twitterclient.user.followers.data.Follower;
+import com.twitter.sdk.android.core.models.Tweet;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,6 +22,10 @@ public interface FollowersService {
             , @Query("skip_status") Boolean skipStatus
             , @Query("include_user_entities") Boolean includeUserEntities);
 
-    Call<Follower> getFollower(@Query("user_id") Long userId,@Query("screen_name") String
+    @GET("/1.1/users/show.json")
+    Call<Follower> getFollower(@Query("user_id") Long userId, @Query("screen_name") String
             screenName, @Query("include_entities") Boolean includeEntities);
+
+    @GET("1.1/statuses/user_timeline.json?include_rts=false")
+    Call<List<Tweet>> getTweets(@Query("user_id") Long userId, @Query("count") Integer count);
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
-import io.realm.Sort;
 
 /**
  * Created by mahmoud on 11/24/16.
@@ -18,22 +17,23 @@ public final class FollowersRealmHelper {
                                               @NonNull Realm realm) {
         RealmQuery<FollowerRealm> query = realm.where(FollowerRealm.class);
         query.equalTo("userId", userId);
-        if (cursor != null) {
+        if (cursor != null && cursor != -1) {
             query.equalTo("cursor", cursor);
         }
-        return query.findAllSorted("name", Sort.ASCENDING);
+        return query.findAll();
     }
 
-    public static FollowerRealm findById(long id, long userId, @NonNull
+    public static FollowerRealm findById(long id, @NonNull
             Realm realm) {
-        return realm.where(FollowerRealm.class).equalTo("id", id).equalTo("userId", userId)
+        return realm.where(FollowerRealm.class).equalTo("id", id)
                 .findFirst();
     }
 
     public static FollowerRealm save(long id, long userId, @NonNull String
             name, @NonNull String screenName, @Nullable String description,
-                                     @Nullable String imageUrl, @NonNull Realm realm) {
-        FollowerRealm follower = findById(id, userId, realm);
+                                     @Nullable String imageUrl, @Nullable String backgroundImageUrl,
+                                     @NonNull Realm realm) {
+        FollowerRealm follower = findById(id, realm);
         if (follower == null) {
             follower = realm.createObject(FollowerRealm.class);
             follower.setId(id);
@@ -44,11 +44,8 @@ public final class FollowersRealmHelper {
         follower.setScreenName(screenName);
         follower.setDescription(description);
         follower.setImageUrl(imageUrl);
+        follower.setBackgroundImageUrl(backgroundImageUrl);
 
         return follower;
-    }
-
-    public static void deleteAll(long userId, @NonNull Realm realm) {
-        findAll(userId, null, realm);
     }
 }

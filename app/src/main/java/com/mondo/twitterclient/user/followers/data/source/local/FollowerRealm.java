@@ -13,6 +13,7 @@ public class FollowerRealm extends RealmObject {
     private String screenName;
     private String description;
     private String imageUrl;
+    private String backgroundImageUrl;
     private long cursor;
 
     public FollowerRealm() {
@@ -76,6 +77,14 @@ public class FollowerRealm extends RealmObject {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getBackgroundImageUrl() {
+        return backgroundImageUrl;
+    }
+
+    public void setBackgroundImageUrl(String backgroundImageUrl) {
+        this.backgroundImageUrl = backgroundImageUrl;
     }
 
     public long getCursor() {

@@ -18,6 +18,8 @@ public class Follower {
     private String description;
     @SerializedName("profile_image_url")
     private String imageUrl;
+    @SerializedName("profile_banner_url")
+    private String backgroundImageUrl;
     private long cursor;
 
     public Follower() {
@@ -25,13 +27,14 @@ public class Follower {
     }
 
     public Follower(long id, long userId, String name, String screenName, String description, String
-            imageUrl, long cursor) {
+            imageUrl, String backgroundImageUrl, long cursor) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.screenName = screenName;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.backgroundImageUrl = backgroundImageUrl;
         this.cursor = cursor;
     }
 
@@ -81,6 +84,14 @@ public class Follower {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getBackgroundImageUrl() {
+        return backgroundImageUrl;
+    }
+
+    public void setBackgroundImageUrl(String backgroundImageUrl) {
+        this.backgroundImageUrl = backgroundImageUrl;
     }
 
     public long getCursor() {

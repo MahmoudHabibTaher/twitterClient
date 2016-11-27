@@ -28,7 +28,7 @@ public interface FollowersListContract {
 
         void setNoMoreFollowersVisible(boolean visible);
 
-        void openFollowerDetailsUi(long id);
+        void openFollowerDetailsUi(long id, String name);
     }
 
     interface Presenter extends BasePresenter {

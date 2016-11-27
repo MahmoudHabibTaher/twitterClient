@@ -3,6 +3,8 @@ package com.mondo.twitterclient.user.followers.data.source;
 import android.support.annotation.NonNull;
 
 import com.mondo.twitterclient.user.followers.data.Follower;
+import com.mondo.twitterclient.user.followers.data.Tweet;
+import com.mondo.twitterclient.utils.PrefsManager;
 
 import java.util.List;
 
@@ -33,13 +35,11 @@ public class FollowersRepository implements FollowersDataSource {
         mLocalDataSource = localDataSource;
     }
 
-    private boolean mCacheDirty;
-
     @Override
-    public Observable<List<Follower>> getFollowers(long userId, long cursor) {
+    public Observable<List<Follower>> getFollowers(Long userId, Long cursor) {
         Observable<List<Follower>> remoteFollowers = getRemoteFollowers(userId, cursor);
 
-        if (mCacheDirty) {
+        if (PrefsManager.getInstance().isCacheDirty()) {
             return remoteFollowers;
         }
 
@@ -48,32 +48,36 @@ public class FollowersRepository implements FollowersDataSource {
                 .isEmpty()).first();
     }
 
-    private Observable<List<Follower>> getRemoteFollowers(long userId, long cursor) {
+    private Observable<List<Follower>> getRemoteFollowers(Long userId, Long cursor) {
         return mRemoteDataSource.getFollowers(userId, cursor).flatMap(
-                followers -> Observable.from(followers).doOnNext(
-                        this::saveFollower).toList()).doOnCompleted(() -> mCacheDirty = false);
+                followers -> Observable.from(followers).doOnNext(follower -> {
+                    follower.setUserId(userId);
+                    saveFollower(follower);
+                }).toList()).doOnCompleted(() -> setCacheDirty(false));
     }
 
-    private Observable<List<Follower>> getLocalFollowers(long userId, long cursor) {
+    private Observable<List<Follower>> getLocalFollowers(Long userId, Long cursor) {
         return mLocalDataSource.getFollowers(userId, cursor);
     }
 
     @Override
-    public Observable<List<Follower>> getNextFollowers(long userId) {
+    public Observable<List<Follower>> getNextFollowers(Long userId) {
         return getRemoteNextFollowers(userId);
     }
 
     private Observable<List<Follower>> getRemoteNextFollowers(long userId) {
         return mRemoteDataSource.getNextFollowers(userId).flatMap(
-                followers -> Observable.from(followers).doOnNext(
-                        this::saveFollower).toList()).doOnCompleted(() -> mCacheDirty = false);
+                followers -> Observable.from(followers).doOnNext(follower -> {
+                    follower.setUserId(userId);
+                    saveFollower(follower);
+                }).toList()).doOnCompleted(() -> setCacheDirty(false));
     }
 
     @Override
-    public Observable<Follower> getFollower(long userId, long id) {
+    public Observable<Follower> getFollower(Long userId, Long id) {
         Observable<Follower> remoteFollower = getRemoteFollower(userId, id);
 
-        if (mCacheDirty) {
+        if (PrefsManager.getInstance().isCacheDirty()) {
             return remoteFollower;
         }
 
@@ -86,7 +90,7 @@ public class FollowersRepository implements FollowersDataSource {
         return mRemoteDataSource.getFollower(userId, id).doOnNext(follower -> {
             follower.setUserId(userId);
             saveFollower(follower);
-        }).doOnCompleted(() -> mCacheDirty = false);
+        }).doOnCompleted(() -> setCacheDirty(false));
     }
 
     private Observable<Follower> getLocalFollower(long userId, long id) {
@@ -98,7 +102,38 @@ public class FollowersRepository implements FollowersDataSource {
         mLocalDataSource.saveFollower(follower);
     }
 
+    @Override
+    public Observable<List<Tweet>> getTweets(Long userId, Integer count) {
+        Observable<List<Tweet>> remoteTweets = getRemoteTweets(userId, count);
+
+        if (PrefsManager.getInstance().isCacheDirty()) {
+            return remoteTweets;
+        }
+
+        Observable<List<Tweet>> localTweets = getLocalTweets(userId, count);
+        return Observable.concat(localTweets, remoteTweets).filter(
+                tweets -> !tweets.isEmpty()).first();
+    }
+
+    private Observable<List<Tweet>> getRemoteTweets(Long userId, Integer count) {
+        return mRemoteDataSource.getTweets(userId, count).flatMap(tweets -> Observable.from
+                (tweets).doOnNext(this::saveTweet).toList());
+    }
+
+    private Observable<List<Tweet>> getLocalTweets(Long userId, Integer count) {
+        return mLocalDataSource.getTweets(userId, count);
+    }
+
+    @Override
+    public void saveTweet(@NonNull Tweet tweet) {
+        mLocalDataSource.saveTweet(tweet);
+    }
+
     public void refreshFollowers() {
-        mCacheDirty = true;
+        setCacheDirty(true);
+    }
+
+    private void setCacheDirty(boolean dirty) {
+        PrefsManager.getInstance().setCacheDirty(dirty);
     }
 }

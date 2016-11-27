@@ -5,6 +5,8 @@ import android.app.Application;
 import com.mondo.twitterclient.realm.RealmHelper;
 import com.mondo.twitterclient.twitter.TwitterApiHelper;
 import com.mondo.twitterclient.twitter.TwitterConfig;
+import com.mondo.twitterclient.utils.NetworkHelper;
+import com.mondo.twitterclient.utils.PrefsManager;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
@@ -21,6 +23,12 @@ public class TwitterClientApp extends Application {
         super.onCreate();
         initFabricWithTwitter();
         initRealm();
+
+        PrefsManager.init(getApplicationContext());
+
+        if (NetworkHelper.isInternetConnected(getApplicationContext())) {
+            PrefsManager.getInstance().setCacheDirty(true);
+        }
     }
 
     private void initFabricWithTwitter() {

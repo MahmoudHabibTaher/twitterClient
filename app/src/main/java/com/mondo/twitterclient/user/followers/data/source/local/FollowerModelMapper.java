@@ -13,7 +13,8 @@ public class FollowerModelMapper implements BaseModelMapper<FollowerRealm, Follo
         Follower follower = null;
         if (from != null) {
             follower = new Follower(from.getId(), from.getUserId(), from.getName(), from
-                    .getScreenName(), from.getDescription(), from.getImageUrl(), from.getCursor());
+                    .getScreenName(), from.getDescription(), from.getImageUrl(),
+                    from.getBackgroundImageUrl(), from.getCursor());
         }
         return follower;
     }

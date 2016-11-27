@@ -44,12 +44,11 @@ public class FollowersListPresenter implements FollowersListContract.Presenter {
             mView.setLoadingIndicatorVisible(true);
             mView.setErrorLoadingFollowersVisible(false);
             mView.setNoFollowersVisible(false);
-            mRepository.refreshFollowers();
         }
 
         mSubscription.clear();
 
-        Subscription subscription = mRepository.getFollowers(mUserId, -1).subscribeOn(Schedulers
+        Subscription subscription = mRepository.getFollowers(mUserId, -1L).subscribeOn(Schedulers
                 .io()).observeOn(AndroidSchedulers.mainThread()).subscribe(this::onFollowersLoaded,
                 this::onFollowersLoadError, this::onFollowersLoadComplete);
         mSubscription.add(subscription);
@@ -106,7 +105,7 @@ public class FollowersListPresenter implements FollowersListContract.Presenter {
 
     @Override
     public void onFollowerClick(@NonNull Follower follower) {
-
+        mView.openFollowerDetailsUi(follower.getId(), follower.getName());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mondo.twitterclient.user.followers.list;
 
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +21,8 @@ public class FollowersAdapter extends BaseQuickAdapter<Follower, BaseViewHolder>
         super(layoutResId, data);
     }
 
+    private OnFollowerClickListener mOnFollowerClickListener;
+
     @Override
     protected void convert(BaseViewHolder baseViewHolder, Follower follower) {
         String name = follower.getName();
@@ -39,5 +42,19 @@ public class FollowersAdapter extends BaseQuickAdapter<Follower, BaseViewHolder>
 
         Glide.with(mContext).load(imageUrl).crossFade().into((ImageView) baseViewHolder.getView(R.id
                 .profile_pic_image_view));
+
+        baseViewHolder.itemView.setOnClickListener(view -> {
+            if (mOnFollowerClickListener != null) {
+                mOnFollowerClickListener.onFollowerClick(follower);
+            }
+        });
+    }
+
+    public void setOnFollowerClickListener(OnFollowerClickListener listener) {
+        mOnFollowerClickListener = listener;
+    }
+
+    public interface OnFollowerClickListener {
+        void onFollowerClick(@NonNull Follower follower);
     }
 }
